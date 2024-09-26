@@ -4,11 +4,12 @@ import Swal from 'sweetalert2';
 import FormGeneral from '../components/datatables/Crud_General.jsx';
 import Pagination from '../components/Pagination/Pagination';
 import SidebarAdministrator from '../components/Admin/SidebarAdministrator.jsx';
-import Modal from '../components/Modal/Init-Modal.jsx'; 
+import Modal from '../components/Modal/Init-Modal.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faFilePdf, faFileExcel, faDatabase } from '@fortawesome/free-solid-svg-icons';
 import DataTable from 'react-data-table-component';
 import '../components/styles/stylesResponsiblesCrud.css';
+import ErrorBoundary from '../components/ErrorBoundary'; // Importa el ErrorBoundary
 
 const CrudResponsables = () => {
   const [responsableList, setResponsableList] = useState([]);
@@ -135,72 +136,80 @@ const CrudResponsables = () => {
   ];
 
   return (
-    <div className="crud-root">
-      <div className="crud-container">
-        <SidebarAdministrator />
-        <div className="main-content">
-          <h1 className="page-title">Gestión de Responsables</h1>
-          <div className="content-wrapper">
-            <button
-              className="add-button"
-              onClick={() => {
-                setResponsable({
-                  Nom_Responsable: '',
-                  estado: 'Activo',
-                });
-                setButtonForm('Enviar');
-                setIsModalOpen(true);
-              }}
-            >
-              <FontAwesomeIcon icon={faPlus} /> Agregar
-            </button>
-
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-              <FormGeneral
-                initialValues={responsable}
-                fields={[
-                  { name: 'Nom_Responsable', label: 'Nombre del Responsable', type: 'text', placeholder: 'Nombre', required: true },
-                  { name: 'estado', label: 'Estado', type: 'select', options: [
-                    { value: 'Activo', label: 'Activo' },
-                    { value: 'Inactivo', label: 'Inactivo' }
-                  ], required: true },
-                ]}
-                onSubmit={handleSubmit}
-                onCancel={() => {
-                  resetForm();
-                  setIsModalOpen(false);
+    <ErrorBoundary> {/* Envolviendo el componente en ErrorBoundary */}
+      <div className="crud-root">
+        <div className="crud-container">
+          <SidebarAdministrator />
+          <div className="main-content">
+            <h1 className="page-title">Gestión de Responsables</h1>
+            <div className="content-wrapper">
+              <button
+                className="add-button"
+                onClick={() => {
+                  setResponsable({
+                    Nom_Responsable: '',
+                    estado: 'Activo',
+                  });
+                  setButtonForm('Enviar');
+                  setIsModalOpen(true);
                 }}
-                buttonText={buttonForm}
-              />
-            </Modal>
+              >
+                <FontAwesomeIcon icon={faPlus} /> Agregar
+              </button>
 
-            <div className="export-buttons">
-              <button className="export-btn pdf-btn" onClick={exportToPDF}>
-                <FontAwesomeIcon icon={faFilePdf} /> Exportar PDF
-              </button>
-              <button className="export-btn excel-btn" onClick={exportToExcel}>
-                <FontAwesomeIcon icon={faFileExcel} /> Exportar Excel
-              </button>
-              <button className="export-btn sql-btn" onClick={exportToSQL}>
-                <FontAwesomeIcon icon={faDatabase} /> Exportar SQL
-              </button>
-            </div>
+              <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <FormGeneral
+                  initialValues={responsable}
+                  fields={[
+                    { name: 'Nom_Responsable', label: 'Nombre del Responsable', type: 'text', placeholder: 'Nombre', required: true },
+                    {
+                      name: 'estado',
+                      label: 'Estado',
+                      type: 'select',
+                      options: [
+                        { value: 'Activo', label: 'Activo' },
+                        { value: 'Inactivo', label: 'Inactivo' },
+                      ],
+                      required: true,
+                    },
+                  ]}
+                  onSubmit={handleSubmit}
+                  onCancel={() => {
+                    resetForm();
+                    setIsModalOpen(false);
+                  }}
+                  buttonText={buttonForm}
+                />
+              </Modal>
 
-            <div className="table-wrapper">
-              <DataTable
-                columns={columns}
-                data={responsableList}
-                pagination
-                highlightOnHover
-                striped
-                paginationComponent={Pagination}
-                paginationPerPage={10}
-              />
+              <div className="export-buttons">
+                <button className="export-btn pdf-btn" onClick={exportToPDF}>
+                  <FontAwesomeIcon icon={faFilePdf} /> Exportar PDF
+                </button>
+                <button className="export-btn excel-btn" onClick={exportToExcel}>
+                  <FontAwesomeIcon icon={faFileExcel} /> Exportar Excel
+                </button>
+                <button className="export-btn sql-btn" onClick={exportToSQL}>
+                  <FontAwesomeIcon icon={faDatabase} /> Exportar SQL
+                </button>
+              </div>
+
+              <div className="table-wrapper">
+                <DataTable
+                  columns={columns}
+                  data={Array.isArray(responsableList) ? responsableList : []} 
+                  pagination
+                  highlightOnHover
+                  striped
+                  paginationComponent={Pagination}
+                  paginationPerPage={10}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 };
 

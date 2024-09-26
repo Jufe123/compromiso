@@ -1,0 +1,61 @@
+/* Pagination.css */
+
+/* Contenedor principal de la paginación */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  /* Botones de paginación */
+  .pagination-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a4a4a;
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .pagination-button:hover {
+    background-color: #4caf50;
+    color: #ffffff;
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Botón activo */
+  .pagination-button-active {
+    background-color: #4caf50;
+    color: #ffffff;
+    border-color: #4caf50;
+  }
+  
+  /* Iconos de navegación */
+  .pagination-icon {
+    height: 20px;
+    width: 20px;
+  }
+  
+  /* Contenedor de los números de página */
+  .pagination-pages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  

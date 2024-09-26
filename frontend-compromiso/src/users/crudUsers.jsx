@@ -5,7 +5,94 @@ import FormUsers from './formUsers.jsx';
 import Pagination from '../components/Pagination/Pagination';
 import SidebarAdministrator from '../components/Admin/SidebarAdministrator.jsx';
 import Modal from '../components/Modal/Init-Modal.jsx'; // Asegúrate de crear este archivo para el modal
-import '../components/styles/stylesCrudUsers.css'; // Importa el archivo CSS
+
+const styles = {
+  root: {
+    minHeight: '100vh',
+    backgroundColor: '#f4f4f4',
+    overflowX: 'hidden',
+    display: 'flex',
+  },
+  sidebar: {
+    width: '250px',
+    backgroundColor: '#333',
+    color: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: '20px',
+  },
+  mainContent: {
+    flex: 1,
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  pageTitle: {
+    fontSize: '2rem',
+    marginBottom: '20px',
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: '1200px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '20px',
+  },
+  openModalButton: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '10px 20px',
+    fontSize: '1rem',
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+  tableWrapper: {
+    width: '100%',
+    maxWidth: '1200px',
+    overflowX: 'auto',
+  },
+  userTable: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    backgroundColor: '#fff',
+    marginTop: '20px',
+  },
+  tableHeader: {
+    backgroundColor: '#f9f9f9',
+    textAlign: 'center',
+  },
+  tableCell: {
+    border: '1px solid #ddd',
+    padding: '10px',
+    textAlign: 'center',
+  },
+  actionButtons: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '10px',
+  },
+  button: {
+    padding: '5px 10px',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    border: 'none',
+    borderRadius: '5px',
+  },
+  editButton: {
+    backgroundColor: '#4caf50',
+    color: '#fff',
+  },
+  deleteButton: {
+    backgroundColor: '#f44336',
+    color: '#fff',
+  },
+};
 
 const CrudUsers = () => {
   const [userList, setUserList] = useState([]);
@@ -106,13 +193,13 @@ const CrudUsers = () => {
   };
 
   return (
-    <div className="root">
-      <SidebarAdministrator className="sidebar" />
-      <div className="mainContent">
-        <h1 className="pageTitle">Gestión de Usuarios</h1>
-        <div className="contentWrapper">
+    <div style={styles.root}>
+      <SidebarAdministrator style={styles.sidebar} />
+      <div style={styles.mainContent}>
+        <h1 style={styles.pageTitle}>Gestión de Usuarios</h1>
+        <div style={styles.contentWrapper}>
           <button
-            className="openModalButton"
+            style={styles.openModalButton}
             onClick={() => {
               resetForm();
               setIsModalOpen(true); // Abrir el modal para añadir un usuario
@@ -130,44 +217,44 @@ const CrudUsers = () => {
             />
           </Modal>
           
-          <div className="tableWrapper">
-            <table className="userTable">
+          <div style={styles.tableWrapper}>
+            <table style={styles.userTable}>
               <thead>
                 <tr>
-                  <th className="tableHeader">ID</th>
-                  <th className="tableHeader">Nombre</th>
-                  <th className="tableHeader">Apellido</th>
-                  <th className="tableHeader">Código</th>
-                  <th className="tableHeader">Correo</th>
-                  <th className="tableHeader">Número de Documento</th>
-                  <th className="tableHeader">Fecha</th>
-                  <th className="tableHeader">Estado</th>
-                  <th className="tableHeader">Rol</th>
-                  <th className="tableHeader">Acciones</th>
+                  <th style={styles.tableHeader}>ID</th>
+                  <th style={styles.tableHeader}>Nombre</th>
+                  <th style={styles.tableHeader}>Apellido</th>
+                  <th style={styles.tableHeader}>Código</th>
+                  <th style={styles.tableHeader}>Correo</th>
+                  <th style={styles.tableHeader}>Número de Documento</th>
+                  <th style={styles.tableHeader}>Fecha</th>
+                  <th style={styles.tableHeader}>Estado</th>
+                  <th style={styles.tableHeader}>Rol</th>
+                  <th style={styles.tableHeader}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {Array.isArray(userList) && userList.slice(desde, hasta).map((user) => (
                   <tr key={user.Id_Usuario}>
-                    <td className="tableCell">{user.Id_Usuario}</td>
-                    <td className="tableCell">{user.Nom_Usuario}</td>
-                    <td className="tableCell">{user.Ape_Usuario}</td>
-                    <td className="tableCell">{user.Cod_Usuario}</td>
-                    <td className="tableCell">{user.Cor_Usuario}</td>
-                    <td className="tableCell">{user.Nde_Usuario}</td>
-                    <td className="tableCell">{user.Fec_Usuario}</td>
-                    <td className="tableCell">{user.estado}</td>
-                    <td className="tableCell">{user.rol}</td>
-                    <td className="tableCell">
-                      <div className="actionButtons">
+                    <td style={styles.tableCell}>{user.Id_Usuario}</td>
+                    <td style={styles.tableCell}>{user.Nom_Usuario}</td>
+                    <td style={styles.tableCell}>{user.Ape_Usuario}</td>
+                    <td style={styles.tableCell}>{user.Cod_Usuario}</td>
+                    <td style={styles.tableCell}>{user.Cor_Usuario}</td>
+                    <td style={styles.tableCell}>{user.Nde_Usuario}</td>
+                    <td style={styles.tableCell}>{user.Fec_Usuario}</td>
+                    <td style={styles.tableCell}>{user.estado}</td>
+                    <td style={styles.tableCell}>{user.rol}</td>
+                    <td style={styles.tableCell}>
+                      <div style={styles.actionButtons}>
                         <button
-                          className="button editButton"
+                          style={{ ...styles.button, ...styles.editButton }}
                           onClick={() => getUser(user.Id_Usuario)}
                         >
                           ✏️
                         </button>
                         <button
-                          className="button deleteButton"
+                          style={{ ...styles.button, ...styles.deleteButton }}
                           onClick={() => deleteUser(user.Id_Usuario)}
                         >
                           🗑️
@@ -179,15 +266,10 @@ const CrudUsers = () => {
               </tbody>
             </table>
           </div>
-
           <Pagination
-            totalItems={userList.length}
-            itemsPerPage={10}
-            currentPage={Math.floor(desde / 10) + 1}
-            onPageChange={(pageNumber) => {
-              setDesde((pageNumber - 1) * 10);
-              setHasta(pageNumber * 10);
-            }}
+            URI="/api/usuarios"
+            setDesde={setDesde}
+            setHasta={setHasta}
           />
         </div>
       </div>
@@ -196,4 +278,3 @@ const CrudUsers = () => {
 };
 
 export default CrudUsers;
-

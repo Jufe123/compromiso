@@ -1,5 +1,4 @@
 import React from 'react';
-import './styles.css'; // Asegúrate de importar el archivo CSS
 import { ReactSession } from 'react-client-session';
 
 

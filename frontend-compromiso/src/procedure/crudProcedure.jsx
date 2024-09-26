@@ -8,10 +8,106 @@ import SidebarAdministrator from '../components/Admin/SidebarAdministrator.jsx';
 import Modal from '../components/Modal/Init-Modal.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
-import DataTable from '../components/datatables/DataTableResponsible.jsx';
 
 const styles = {
-  // Tus estilos aquí
+  root: {
+    minHeight: '100vh',
+    backgroundColor: '#f4f4f4',
+    overflowX: 'hidden',
+  },
+  crudContainer: {
+    display: 'flex',
+    minHeight: 'calc(100vh - 60px)',
+    width: '107%',
+  },
+  sidebar: {
+    width: '250px',
+    backgroundColor: '#333',
+    color: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: '20px',
+  },
+  mainContent: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    marginTop: '20px',
+  },
+  pageTitle: {
+    textAlign: 'center',
+    marginBottom: '20px',
+    fontSize: '2rem',
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: '1200px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '20px',
+    paddingLeft: '20px',
+  },
+  icon: {
+    marginRight: '8px', // Espacio entre el icono y el texto
+  },
+  openModalButton: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '10px 20px',
+    fontSize: '1rem',
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    marginLeft: '190px',
+  },
+  icon: {
+    marginRight: '8px',
+  },
+  tableWrapper: {
+    width: '100%',
+    maxWidth: '800px',
+    margin: '0 auto',
+  },
+  processTable: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    backgroundColor: '#fff',
+  },
+  tableHeader: {
+    backgroundColor: '#f9f9f9',
+    textAlign: 'center',
+  },
+  tableCell: {
+    border: '1px solid #ddd',
+    padding: '10px',
+    textAlign: 'center',
+  },
+  actionButtons: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '10px',
+  },
+  button: {
+    padding: '5px 10px',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    border: 'none',
+    borderRadius: '5px',
+  },
+  editButton: {
+    backgroundColor: '#4caf50',
+    color: '#fff',
+  },
+  deleteButton: {
+    backgroundColor: '#f44336',
+    color: '#fff',
+  },
 };
 
 const CrudProcedures = () => {
@@ -128,26 +224,6 @@ const CrudProcedures = () => {
     return process ? process.Nom_Proceso : 'Desconocido';
   };
 
-  const columns = [
-    {
-      Header: 'ID',
-      accessor: 'Id_Procedimiento',
-    },
-    {
-      Header: 'Nombre del Procedimiento',
-      accessor: 'Nom_Procedimiento',
-    },
-    {
-      Header: 'Proceso',
-      id: 'processName',
-      accessor: d => getProcessName(d.Id_Proceso),
-    },
-    {
-      Header: 'Estado',
-      accessor: 'estado',
-    },
-  ];
-
   return (
     <div style={styles.root}>
       <div style={styles.crudContainer}>
@@ -181,13 +257,44 @@ const CrudProcedures = () => {
                 procedureQuery={procedureQuery}
                 setProcedureQuery={setProcedureQuery}
               />
-              <DataTable
-                columns={columns}
-                data={procedureQuery.slice(desde, hasta)}
-                getProcessName={getProcessName}
-                onEdit={getProcedure}
-                onDelete={deleteProcedure}
-              />
+              <table style={styles.processTable}>
+                <thead>
+                  <tr>
+                    <th style={styles.tableHeader}>ID</th>
+                    <th style={styles.tableHeader}>Nombre del Procedimiento</th>
+                    <th style={styles.tableHeader}>Proceso</th>
+                    <th style={styles.tableHeader}>Estado</th>
+                    <th style={styles.tableHeader}>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(procedureQuery) &&
+                    procedureQuery.slice(desde, hasta).map((procedure) => (
+                      <tr key={procedure.Id_Procedimiento}>
+                        <td style={styles.tableCell}>{procedure.Id_Procedimiento}</td>
+                        <td style={styles.tableCell}>{procedure.Nom_Procedimiento}</td>
+                        <td style={styles.tableCell}>{getProcessName(procedure.Id_Proceso)}</td>
+                        <td style={styles.tableCell}>{procedure.estado}</td>
+                        <td style={styles.tableCell}>
+                          <div style={styles.actionButtons}>
+                            <button
+                              style={{ ...styles.button, ...styles.editButton }}
+                              onClick={() => getProcedure(procedure.Id_Procedimiento)}
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              style={{ ...styles.button, ...styles.deleteButton }}
+                              onClick={() => deleteProcedure(procedure.Id_Procedimiento)}
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
               <Pagination
                 URI="/api/procedimientos"
                 setDesde={setDesde}

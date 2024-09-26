@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
 
 const FormQueryUnit = ({ unitQuery, setUnitQuery }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,7 +17,6 @@ const FormQueryUnit = ({ unitQuery, setUnitQuery }) => {
 
   return (
     <div className="search-wrapper">
-      <FontAwesomeIcon icon={faSearch} className="search-icon" />
       <input
         type="text"
         placeholder="Buscar por nombre..."

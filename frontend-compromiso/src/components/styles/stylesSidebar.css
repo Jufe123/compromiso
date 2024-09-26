@@ -107,3 +107,74 @@
 .status-indicator.inactive {
   background-color: #dc3545; /* Rojo cuando está inactivo */
 }
+
+/* stylesSidebar.css */
+
+/* Estilos para el mensaje de bienvenida */
+.welcome-message {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.welcome-message h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.welcome-message p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Estilos para la pantalla de bienvenida al pie */
+.footer-welcome-message {
+  background-color: #f1f1f1;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.sidebar {
+  background-color: #2e2e2e; /* Fondo oscuro para la barra lateral */
+  color: #e0e0e0; /* Color del texto */
+}
+
+.sidebar-title {
+  text-align: center; /* Centra el texto */
+  padding: 30px 0; /* Aumenta el espaciado superior e inferior */
+  background: linear-gradient(135deg, #1e1e1e, #2e2e2e); /* Gradiente oscuro */
+  border-bottom: 2px solid #444; /* Línea inferior sutil */
+  margin-bottom: 30px; /* Espacio adicional debajo del título */
+}
+
+.sidebar-title h1 {
+  font-size: 1.75rem; /* Tamaño de fuente mayor para el título */
+  color: #ffffff; /* Color blanco para el texto del título */
+  margin: 0; /* Elimina margen predeterminado */
+  text-transform: uppercase; /* Texto en mayúsculas */
+  letter-spacing: 1px; /* Espaciado entre letras */
+}
+
+.nav-link {
+  color: #e0e0e0; /* Color de texto de los enlaces */
+}
+
+.nav-link.active {
+  background-color: #444; /* Fondo para el enlace activo */
+  border-radius: 4px; /* Bordes redondeados en el enlace activo */
+}
+
+.icon {
+  color: #e0e0e0; /* Color de los iconos */
+}
+
+.settings-logout {
+  margin-top: auto; /* Coloca la sección de configuración y cierre al final */
+}
+
+.settings-logout .nav-link {
+  color: #e0e0e0; /* Color de texto para enlaces de configuración y cierre */
+}
+

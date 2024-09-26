@@ -1,132 +1,269 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import clienteAxios from '../api.js';
 import Swal from 'sweetalert2';
-import $ from 'jquery';
-// import 'datatables.net';
-// import 'datatables.net-select';
+import Pagination from '../components/Pagination/Pagination';
+import FormAreas from './FormAreas.jsx';
+import FormQueryArea from './FormQueryArea.jsx';
+import SidebarAdministrator from '../components/Admin/SidebarAdministrator.jsx';
+import Modal from '../components/Modal/Init-Modal.jsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBuilding } from '@fortawesome/free-solid-svg-icons';
 
-const CrudArea = () => {
-  const [areas, setAreas] = useState([]);
-  const [loading, setLoading] = useState(true);
+const styles = {
+  root: {
+    minHeight: '100vh',
+    backgroundColor: '#f4f4f4',
+    overflowX: 'hidden',
+  },
+  crudContainer: {
+    display: 'flex',
+    minHeight: 'calc(100vh - 60px)',
+    width: '107%',
+  },
+  sidebar: {
+    width: '250px',
+    backgroundColor: '#333',
+    color: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: '20px',
+  },
+  mainContent: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    marginTop: '20px',
+  },
+  pageTitle: {
+    textAlign: 'center',
+    marginBottom: '20px',
+    fontSize: '2rem',
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: '1200px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '20px',
+    paddingLeft: '20px',
+  },
+  addButton: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '10px 20px',
+    fontSize: '1rem',
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    marginLeft: '190px',
+  },
+  icon: {
+    marginRight: '8px', // Espacio entre el icono y el texto
+  },
+  tableWrapper: {
+    width: '100%',
+    maxWidth: '800px',
+    margin: '0 auto',
+  },
+  areaTable: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    backgroundColor: '#fff',
+  },
+  tableHeader: {
+    backgroundColor: '#f9f9f9',
+    textAlign: 'center',
+  },
+  tableCell: {
+    border: '1px solid #ddd',
+    padding: '10px',
+    textAlign: 'center',
+  },
+  actionButtons: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '10px',
+  },
+  button: {
+    padding: '5px 10px',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    border: 'none',
+    borderRadius: '5px',
+  },
+};
+
+const CrudAreas = () => {
+  const [areaList, setAreaList] = useState([]);
+  const [area, setArea] = useState({
+    Nom_Area: '',
+    estado: 'Sí',
+  });
+  const [areaQuery, setAreaQuery] = useState([]);
+  const [buttonForm, setButtonForm] = useState('Enviar');
+  const [desde, setDesde] = useState(0);
+  const [hasta, setHasta] = useState(10);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Fetch areas from API
-    const fetchAreas = async () => {
-      try {
-        const response = await axios.get('http://localhost:1337/api/areas');
-        setAreas(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching areas:', error);
-        setLoading(false);
-      }
-    };
+    getAllAreas();
+  }, [desde, hasta]);
 
-    fetchAreas();
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      $('#areasTable').DataTable({
-        data: areas,
-        columns: [
-          { data: 'Id_Area', title: 'ID' },
-          { data: 'Nom_Area', title: 'Nombre' },
-          { data: 'estado', title: 'Estado' },
-          {
-            data: null,
-            className: 'center',
-            defaultContent: `
-              <button class="edit">Editar</button>
-              <button class="delete">Eliminar</button>
-            `,
-            orderable: false
-          }
-        ]
-      });
-    }
-  }, [loading, areas]);
-
-  // Function to handle editing
-  const handleEdit = async (id, data) => {
-    const { value: formValues } = await Swal.fire({
-      title: 'Editar Área',
-      html: `
-        <input id="nom_area" class="swal2-input" placeholder="Nombre" value="${data.Nom_Area}">
-        <select id="estado" class="swal2-select">
-          <option value="Sí" ${data.estado === 'Sí' ? 'selected' : ''}>Sí</option>
-          <option value="No" ${data.estado === 'No' ? 'selected' : ''}>No</option>
-        </select>
-      `,
-      confirmButtonText: 'Actualizar',
-      preConfirm: () => ({
-        Nom_Area: document.getElementById('nom_area').value,
-        estado: document.getElementById('estado').value
-      })
-    });
-
-    if (formValues) {
-      try {
-        await axios.put(`http://localhost:1337/api/areas/${id}`, formValues);
-        $('#areasTable').DataTable().ajax.reload();
-        Swal.fire('Actualizado', 'El área ha sido actualizada', 'success');
-      } catch (error) {
-        Swal.fire('Error', 'No se pudo actualizar el área', 'error');
-      }
+  const getAllAreas = async () => {
+    try {
+      const response = await clienteAxios.get('/api/areas');
+      setAreaList(response.data);
+      setAreaQuery(response.data);
+    } catch (error) {
+      console.error('Error al obtener las áreas:', error);
     }
   };
 
-  // Function to handle deleting
-  const handleDelete = async (id) => {
-    const { isConfirmed } = await Swal.fire({
-      title: 'Eliminar Área',
-      text: '¿Estás seguro de que quieres eliminar esta área?',
+  const getArea = async (Id_Area) => {
+    try {
+      const response = await clienteAxios.get(`/api/areas/${Id_Area}`);
+      setArea(response.data);
+      setButtonForm('Actualizar');
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error al obtener el área:', error);
+    }
+  };
+
+  const deleteArea = async (Id_Area) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás recuperar este registro!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar'
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminarlo!',
     });
 
-    if (isConfirmed) {
+    if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:1337/api/areas/${id}`);
-        $('#areasTable').DataTable().ajax.reload();
-        Swal.fire('Eliminado', 'El área ha sido eliminada', 'success');
+        await clienteAxios.delete(`/api/areas/${Id_Area}`);
+        Swal.fire('Eliminado!', 'El registro ha sido eliminado.', 'success');
+        getAllAreas();
       } catch (error) {
-        Swal.fire('Error', 'No se pudo eliminar el área', 'error');
+        console.error('Error al eliminar el área:', error);
       }
     }
   };
 
-  // Event delegation for edit and delete buttons
-  $(document).on('click', '#areasTable .edit', function () {
-    const data = $('#areasTable').DataTable().row($(this).parents('tr')).data();
-    handleEdit(data.Id_Area, data);
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (buttonForm === 'Enviar') {
+        await clienteAxios.post('/api/areas', area);
+        Swal.fire('Agregado!', 'El área ha sido agregada.', 'success');
+      } else {
+        await clienteAxios.put(`/api/areas/${area.Id_Area}`, area);
+        Swal.fire('Actualizado!', 'El área ha sido actualizada.', 'success');
+      }
+      resetForm();
+      setIsModalOpen(false);
+      getAllAreas();
+    } catch (error) {
+      console.error('Error al enviar el formulario:', error);
+    }
+  };
 
-  $(document).on('click', '#areasTable .delete', function () {
-    const data = $('#areasTable').DataTable().row($(this).parents('tr')).data();
-    handleDelete(data.Id_Area);
-  });
+  const resetForm = () => {
+    setArea({
+      Nom_Area: '',
+      estado: 'Sí',
+    });
+    setButtonForm('Enviar');
+  };
 
   return (
-    <div>
-      <h1>Gestión de Áreas</h1>
-      <table id="areasTable" className="display">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* La tabla se llenará con DataTables */}
-        </tbody>
-      </table>
+    <div style={styles.root}>
+      <div style={styles.crudContainer}>
+        <SidebarAdministrator style={styles.sidebar} />
+        <div style={styles.mainContent}>
+          <h1 style={styles.pageTitle}>Gestión de Áreas</h1>
+          <div style={styles.contentWrapper}>
+            <button
+              style={styles.addButton}
+              onClick={() => {
+                resetForm();
+                setIsModalOpen(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faBuilding} style={styles.icon} />
+              Añadir
+            </button>
+
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <FormAreas
+                area={area}
+                setArea={setArea}
+                handleSubmit={handleSubmit}
+                buttonForm={buttonForm}
+                resetForm={resetForm}
+              />
+            </Modal>
+
+            <div style={styles.tableWrapper}>
+              <FormQueryArea
+                areaQuery={areaQuery}
+                setAreaQuery={setAreaQuery}
+              />
+              <table style={styles.areaTable}>
+                <thead>
+                  <tr>
+                    <th style={styles.tableHeader}>ID</th>
+                    <th style={styles.tableHeader}>Nombre del Área</th>
+                    <th style={styles.tableHeader}>Estado</th>
+                    <th style={styles.tableHeader}>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(areaQuery) &&
+                    areaQuery.slice(desde, hasta).map((area) => (
+                      <tr key={area.Id_Area}>
+                        <td style={styles.tableCell}>{area.Id_Area}</td>
+                        <td style={styles.tableCell}>{area.Nom_Area}</td>
+                        <td style={styles.tableCell}>{area.estado}</td>
+                        <td style={styles.tableCell}>
+                          <div style={styles.actionButtons}>
+                            <button
+                              style={styles.button}
+                              onClick={() => getArea(area.Id_Area)}
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              style={styles.button}
+                              onClick={() => deleteArea(area.Id_Area)}
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+              <Pagination
+                URI="/api/areas"
+                setDesde={setDesde}
+                setHasta={setHasta}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default CrudArea;
+export default CrudAreas;

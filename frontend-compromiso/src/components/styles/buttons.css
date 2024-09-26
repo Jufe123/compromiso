@@ -1,65 +1,18 @@
 .download-buttons {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px;
-}
-
-.download-buttons button {
-  background-color: #333;
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 10px 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.download-buttons button:focus {
-  outline: none;
-}
-
-.download-buttons button:active {
-  transform: scale(0.95);
-}
-
-.download-buttons button:before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 300%;
-  height: 300%;
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-  transition: opacity 0.3s ease;
-  opacity: 0;
-  transform: translate(-50%, -50%);
-}
-
-.download-buttons button:active:before {
-  opacity: 1;
-}
-
-.download-buttons button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-.download-buttons button:active {
-  animation: spin 1s ease;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
+    display: flex;
+    gap: 10px;
   }
-  100% {
-    transform: rotate(360deg);
+  
+  .download-buttons button {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
   }
-}
-
-.download-buttons button svg {
-  margin-right: 8px;
-}
+  
+  .download-buttons button:hover {
+    background: #e0e0e0;
+  }
+  

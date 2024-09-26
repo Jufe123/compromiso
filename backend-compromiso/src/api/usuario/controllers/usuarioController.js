@@ -15,10 +15,11 @@ const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
+    pass: process.env.EMAIL_PASSWORD,
+  },
 });
 
+// Función para validar los datos del usuario
 const validarDatosUsuario = (data) => {
   const { Nom_Usuario, Ape_Usuario, Cod_Usuario, Cor_Usuario, Fec_Usuario, estado, rol, password } = data;
 
@@ -55,6 +56,7 @@ const validarDatosUsuario = (data) => {
   return null;
 };
 
+// Crear un nuevo usuario
 const crearUsuario = async (req, res) => {
   const { Nom_Usuario, Ape_Usuario, Cod_Usuario, Cor_Usuario, Fec_Usuario, estado, rol, password } = req.body;
 
@@ -79,7 +81,7 @@ const crearUsuario = async (req, res) => {
       estado,
       rol,
       token,
-      password: hashedPassword
+      password: hashedPassword,
     });
     res.status(201).json(nuevoUsuario);
   } catch (error) {
@@ -88,6 +90,34 @@ const crearUsuario = async (req, res) => {
   }
 };
 
+// Obtener todos los usuarios
+const getUsuarios = async (req, res) => {
+  try {
+    const usuarios = await Usuario.findAll();
+    res.json(usuarios);
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).json({ error: 'Error al obtener los usuarios.' });
+  }
+};
+
+// Obtener un usuario por ID
+const getUsuarioById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const usuario = await Usuario.findByPk(id);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+    res.json(usuario);
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).json({ error: 'Error al obtener el usuario.' });
+  }
+};
+
+// Actualizar un usuario existente
 const actualizarUsuario = async (req, res) => {
   const { id } = req.params;
   const { Nom_Usuario, Ape_Usuario, Cod_Usuario, Cor_Usuario, Fec_Usuario, estado, rol, password } = req.body;
@@ -126,6 +156,7 @@ const actualizarUsuario = async (req, res) => {
   }
 };
 
+// Eliminar un usuario
 const eliminarUsuario = async (req, res) => {
   const { id } = req.params;
 
@@ -143,6 +174,7 @@ const eliminarUsuario = async (req, res) => {
   }
 };
 
+// Iniciar sesión
 const loginUsuario = async (req, res) => {
   const { Cod_Usuario, password } = req.body;
 
@@ -171,6 +203,7 @@ const loginUsuario = async (req, res) => {
   }
 };
 
+// Manejar la solicitud de olvido de contraseña
 const olvidePassword = async (req, res) => {
   const { Cor_Usuario } = req.body;
 
@@ -193,7 +226,7 @@ const olvidePassword = async (req, res) => {
       to: Cor_Usuario,
       from: process.env.EMAIL_USER,
       subject: 'Restablecimiento de contraseña',
-      text: `Recibimos una solicitud de restablecimiento de contraseña. Haga clic en el siguiente enlace para restablecer su contraseña: \n\n http://${req.headers.host}/reset/${resetToken} \n\n Si no solicitó este cambio, ignore este correo.`
+      text: `Recibimos una solicitud de restablecimiento de contraseña. Haga clic en el siguiente enlace para restablecer su contraseña: \n\n http://${req.headers.host}/reset/${resetToken} \n\n Si no solicitó este cambio, ignore este correo.`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -205,6 +238,7 @@ const olvidePassword = async (req, res) => {
   }
 };
 
+// Restablecer la contraseña
 const resetPassword = async (req, res) => {
   const { token, password } = req.body;
 
@@ -216,8 +250,8 @@ const resetPassword = async (req, res) => {
     const usuario = await Usuario.findOne({
       where: {
         resetPasswordToken: token,
-        resetPasswordExpires: { [Op.gt]: Date.now() }
-      }
+        resetPasswordExpires: { [Op.gt]: Date.now() },
+      },
     });
 
     if (!usuario) {
@@ -230,18 +264,21 @@ const resetPassword = async (req, res) => {
     usuario.resetPasswordExpires = null;
     await usuario.save();
 
-    res.json({ message: 'Contraseña actualizada correctamente.' });
+    res.json({ message: 'Contraseña restablecida correctamente.' });
   } catch (error) {
     logger.error(error.message);
     res.status(500).json({ error: 'Error al restablecer la contraseña.' });
   }
 };
 
+// Exportar las funciones del controlador
 module.exports = {
   crearUsuario,
+  getUsuarios,
+  getUsuarioById,
   actualizarUsuario,
   eliminarUsuario,
   loginUsuario,
   olvidePassword,
-  resetPassword
+  resetPassword,
 };

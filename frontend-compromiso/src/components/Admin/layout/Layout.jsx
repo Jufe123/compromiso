@@ -1,15 +1,13 @@
-// src/components/Admin/layout/Layout.jsx
+// Layout.jsx
 import React from 'react';
-import { Outlet } from 'react-router-dom'; // Asegúrate de importar Outlet
-import SidebarAdministrator from '../SidebarAdministrator'; // Asegúrate de que la ruta sea correcta
-import '../../styles/layaout.css'; // Asegúrate de que los estilos sean correctos
+import SidebarAdministrator from './SidebarAdministrator';
 
-const Layout = () => {
+const Layout = ({ children }) => {
   return (
-    <div className="layout-container">
+    <div style={{ display: 'flex' }}>
       <SidebarAdministrator />
-      <main className="main-content">
-        <Outlet /> {/* Esto renderiza las rutas anidadas */}
+      <main style={{ flex: 1, padding: '20px' }}>
+        {children}
       </main>
     </div>
   );

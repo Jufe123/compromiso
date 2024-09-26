@@ -1,87 +1,89 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faUsers, faUserShield, faProjectDiagram, faBuilding, faLayerGroup, faFileAlt, faCogs, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUserShield, faProjectDiagram, faBuilding, faLayerGroup, faFileAlt, faCogs, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/stylesSidebar.css';
 
 const SidebarAdministrator = () => {
-  const [isUserActive, setIsUserActive] = React.useState(true);
+  const location = useLocation();
+  const [activeLink, setActiveLink] = useState(location.pathname);
+  const [isUserActive, setIsUserActive] = useState(true);
+
+  useEffect(() => {
+    setActiveLink(location.pathname);
+  }, [location.pathname]);
 
   return (
     <div className="sidebar">
       <div className="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+        {/* Título principal */}
+        <div className="sidebar-title">
+          <h1>MÓDULOS</h1>
+        </div>
+
         <ul className="nav flex-column">
           <li className="nav-item">
-            <NavLink
-              className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-              to="/"
-            >
-              <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
-              Dashboard
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink
-              className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-              to="/admin/Usuarios"
+            <Link
+              className={`nav-link d-flex align-items-center gap-2 ${activeLink === '/CrudUsers' ? 'active' : ''}`}
+              to="/CrudUsers"
             >
               <FontAwesomeIcon icon={faUsers} className="icon" />
               USUARIOS
-            </NavLink>
+            </Link>
           </li>
           <li className="nav-item">
-            <NavLink
-              className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-              to="/admin/Responsables"
+            <Link
+              className={`nav-link d-flex align-items-center gap-2 ${activeLink === '/Responsables' ? 'active' : ''}`}
+              to="/Responsables"
             >
               <FontAwesomeIcon icon={faUserShield} className="icon" />
               RESPONSABLES
-            </NavLink>
+            </Link>
           </li>
           <li className="nav-item">
-            <NavLink
-              className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-              to="/admin/Areas"
+            <Link
+              className={`nav-link d-flex align-items-center gap-2 ${activeLink === '/Areas' ? 'active' : ''}`}
+              to="/Areas"
             >
               <FontAwesomeIcon icon={faBuilding} className="icon" />
               AREAS
-            </NavLink>
+            </Link>
           </li>
           <li className="nav-item">
-            <NavLink
-              className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-              to="/admin/Unidades"
+            <Link
+              className={`nav-link d-flex align-items-center gap-2 ${activeLink === '/Unidades' ? 'active' : ''}`}
+              to="/Unidades"
             >
               <FontAwesomeIcon icon={faLayerGroup} className="icon" />
               UNIDADES
-            </NavLink>
+            </Link>
           </li>
           <li className="nav-item">
-            <NavLink
-              className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-              to="/admin/Procesos"
+            <Link
+              className={`nav-link d-flex align-items-center gap-2 ${activeLink === '/Procesos' ? 'active' : ''}`}
+              to="/Procesos"
             >
               <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
               PROCESOS
-            </NavLink>
+            </Link>
           </li>
           <li className="nav-item">
-            <NavLink
-              className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-              to="/admin/Procedimientos"
+            <Link
+              className={`nav-link d-flex align-items-center gap-2 ${activeLink === '/Procedimientos' ? 'active' : ''}`}
+              to="/Procedimientos"
             >
               <FontAwesomeIcon icon={faFileAlt} className="icon" />
-              PROCEDIMIENTO
-            </NavLink>
+              PROCEDIMIENTOS
+            </Link>
           </li>
           <li className="nav-item">
-            <NavLink
-              className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-              to="/admin/Formatos"
+            <Link
+              className={`nav-link d-flex align-items-center gap-2 ${activeLink === '/Formatos' ? 'active' : ''}`}
+              to="/Formatos"
             >
               <FontAwesomeIcon icon={faCogs} className="icon" />
               FORMATOS
-            </NavLink>
+            </Link>
           </li>
         </ul>
 
@@ -90,22 +92,13 @@ const SidebarAdministrator = () => {
         <div className="settings-logout">
           <ul className="nav flex-column mb-auto">
             <li className="nav-item">
-              <NavLink
-                className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
-                to="/settings"
-              >
-                <FontAwesomeIcon icon={faCogs} className="icon" />
-                Settings
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) => `nav-link d-flex align-items-center gap-2 ${isActive ? 'active' : ''}`}
+              <Link
+                className={`nav-link d-flex align-items-center gap-2 ${activeLink === '/login-admin' ? 'active' : ''}`}
                 to="/login-admin"
               >
                 <FontAwesomeIcon icon={faSignOutAlt} className="icon" />
                 Sign out
-              </NavLink>
+              </Link>
             </li>
           </ul>
         </div>

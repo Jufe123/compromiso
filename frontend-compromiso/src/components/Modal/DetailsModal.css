@@ -1,0 +1,20 @@
+.carousel-image-container {
+    display: flex;
+    flex-direction: column; /* Permite apilar la imagen y la descripción verticalmente */
+    align-items: center; /* Centra horizontalmente */
+    position: relative;
+  }
+  
+  .carousel-image {
+    width: 150px; /* Tamaño del círculo */
+    height: 150px;
+    border-radius: 50%; /* Redondear la imagen en círculo */
+    object-fit: cover; /* Ajustar la imagen dentro del círculo */
+    background-color: #e9ecef;
+  }
+  
+  .carousel-description {
+    margin-top: 10px; /* Espacio entre la imagen y la descripción */
+    text-align: center;
+  }
+  

@@ -22,15 +22,15 @@ const NavMenuSE = () => {
 
     const styles = {
         container: {
-            marginTop: '2rem',
-            padding: '2rem',
-            backgroundColor: '#f3f4f6',
-            borderRadius: '20px',
-            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)',
-            fontFamily: 'Georgia, serif',
-            maxWidth: '1200px',
-            margin: '0 auto',
-            position: 'relative',
+             marginTop: '3rem',
+             padding: '4rem',
+             //backgroundColor: '#f3f4f6',
+             //borderRadius: '20px',
+             //boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)',
+              fontFamily: 'Georgia, serif',
+              maxWidth: '1200px',
+              margin: '0 auto',
+              //position: 'relative',
         },
         title: {
             fontSize: '2.8rem',
@@ -48,18 +48,14 @@ const NavMenuSE = () => {
             alignItems: 'center',
             marginBottom: '3rem',
             padding: '1rem',
-            backgroundColor: '#ffffff',
-            borderRadius: '15px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+            backgroundColor: 'transparent', // Fondo transparente
         },
         visionSection: {
             display: 'flex',
-            flexDirection: 'row-reverse',
+            flexDirection: 'row',
             alignItems: 'center',
             padding: '1rem',
-            backgroundColor: '#ffffff',
-            borderRadius: '15px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+            backgroundColor: 'transparent', // Fondo transparente
         },
         heading: {
             fontSize: '2.2rem',
@@ -74,6 +70,8 @@ const NavMenuSE = () => {
             lineHeight: '1.8',
             color: '#7f8c8d',
             animation: 'fadeInRight 1s ease-in-out',
+            textAlign: 'justify',
+            marginLeft: '1rem',
             marginRight: '1rem',
         },
         missionImage: {
@@ -82,8 +80,6 @@ const NavMenuSE = () => {
             marginRight: '1.5rem',
             transition: 'transform 0.6s ease, box-shadow 0.6s ease',
             cursor: 'pointer',
-            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-            borderRadius: '15px',
         },
         visionImage: {
             width: '300px',
@@ -91,26 +87,12 @@ const NavMenuSE = () => {
             marginLeft: '1.5rem',
             transition: 'transform 0.6s ease, box-shadow 0.6s ease',
             cursor: 'pointer',
-            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-            borderRadius: '15px',
         },
         imageHoveredLeft: {
             transform: 'rotateY(20deg) rotateX(10deg) scale(1.2)',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
         },
         imageHoveredRight: {
             transform: 'rotateY(-20deg) rotateX(-10deg) scale(1.2)',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
-        },
-        decorativeLine: {
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            width: '80%',
-            height: '2px',
-            backgroundColor: '#2c3e50',
-            transform: 'translate(-50%, -50%)',
-            zIndex: '-1',
         }
     };
 
@@ -118,8 +100,6 @@ const NavMenuSE = () => {
         <>
             <NavMenuPublic />
             <div className="container my-5" style={styles.container}>
-                {/* <h1 style={styles.title}>Misión y Visión</h1> */}
-
                 {/* Misión */}
                 <div style={styles.missionSection}>
                     <img
@@ -162,7 +142,7 @@ const NavMenuSE = () => {
                     </div>
                     <img
                         src={images[1]}
-                        alt="Visión 1"
+                        alt="Visión"
                         style={{
                             ...styles.visionImage,
                             ...(hoveredImage?.index === 1 && hoveredImage?.direction === 'left' && styles.imageHoveredRight),
@@ -174,23 +154,7 @@ const NavMenuSE = () => {
                         }}
                         onMouseLeave={handleMouseLeave}
                     />
-                    <img
-                        src={images[2]}
-                        alt="Visión 2"
-                        style={{
-                            ...styles.visionImage,
-                            ...(hoveredImage?.index === 2 && hoveredImage?.direction === 'left' && styles.imageHoveredRight),
-                            ...(hoveredImage?.index === 2 && hoveredImage?.direction === 'right' && styles.imageHoveredLeft),
-                        }}
-                        onMouseEnter={(e) => {
-                            const direction = e.nativeEvent.offsetX < e.target.clientWidth / 2 ? 'left' : 'right';
-                            handleMouseEnter(2, direction);
-                        }}
-                        onMouseLeave={handleMouseLeave}
-                    />
                 </div>
-
-                <div style={styles.decorativeLine}></div>
             </div>
         </>
     );

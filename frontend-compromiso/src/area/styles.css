@@ -1,137 +1,4 @@
-/* Contenedor principal */
-.crud-container {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f4f4f4;
-  }
-  
-  /* Contenido principal */
-  .main-content {
-    flex: 1;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  /* Título de la página */
-  .page-title {
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #333;
-  }
-  
-  /* Contenedor del contenido */
-  .content-wrapper {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Tabla de áreas */
-  .table-wrapper {
-    margin-top: 20px;
-  }
-  
-  .area-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .area-table th,
-  .area-table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .area-table th {
-    background-color: #f4f4f4;
-  }
-  
-  /* Botones */
-  .edit-button,
-  .delete-button {
-    border: none;
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-  }
-  
-  .edit-button {
-    background-color: #4caf50;
-  }
-  
-  .edit-button:hover {
-    background-color: #ffffff;
-  }
-  
-  .delete-button {
-    background-color: #f44336;
-  }
-  
-  .delete-button:hover {
-    background-color: #e53935;
-  }
-  
-  /* Formulario */
-  .form {
-    display: flex;
-    flex-direction: column;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-  
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus {
-    border-color: #3085d6;
-    box-shadow: 0 0 8px rgba(48, 133, 214, 0.3);
-    outline: none;
-  }
-  
-  .submit-button {
-    padding: 12px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #3085d6;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 10px;
-  }
-  
-  .submit-button:hover {
-    background-color: #2874a6;
-  }
-  
+
   /* Búsqueda */
   .search-wrapper {
     display: flex;
@@ -147,12 +14,7 @@
     transition: border-color 0.3s, box-shadow 0.3s;
   }
   
-  .search-input:focus {
-    border-color: #3085d6;
-    box-shadow: 0 0 8px rgba(48, 133, 214, 0.3);
-    outline: none;
-  }
-  
+ 
   .search-button {
     background-color: #4caf50;
     color: white;
@@ -163,8 +25,3 @@
     transition: background-color 0.3s;
     margin-left: 10px;
   }
-  
-  .search-button:hover {
-    background-color: #45a049;
-  }
-  

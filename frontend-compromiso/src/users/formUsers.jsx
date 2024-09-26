@@ -1,188 +1,237 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import clienteAxios from '../config/axios';
+import Alerta from '../components/Alert/Alerta.jsx';
+import { ReactSession } from 'react-client-session';
+import Swal from 'sweetalert2';
 
-const FormUser = ({ handleSubmit, buttonForm }) => {
+const FormUser = ({ buttonForm, user, getAllUsers }) => {
   const [Nombre, setNombre] = useState('');
   const [Apellido, setApellido] = useState('');
   const [Codigo, setCodigo] = useState('');
-  const [Correo, setCorreo] = useState('');
-  const [FechaNacimiento, setFechaNacimiento] = useState('');
-  const [Estado, setEstado] = useState('Sí');
+  const [Email, setEmail] = useState('');
+  const [Telefono, setTelefono] = useState('');
+  const [Fecha, setFecha] = useState('');
+  const [Estado, setEstado] = useState('Sí'); // Valor por defecto
   const [Rol, setRol] = useState('Administrador');
-  const [Password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [Password, setPassword] = useState(''); // Campo para la contraseña
+  const [alerta, setAlerta] = useState({});
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
 
-  const nombreRegex = /^[A-Za-z\s]+$/;
-  const codigoRegex = /^[0-9]+$/;
-  const correoRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!Nombre) {
-      newErrors.Nombre = 'El nombre es obligatorio.';
-    } else if (!nombreRegex.test(Nombre)) {
-      newErrors.Nombre = 'El nombre solo puede contener letras.';
+  useEffect(() => {
+    if (user) {
+      setNombre(user.Nom_Usuario || '');
+      setApellido(user.Ape_Usuario || '');
+      setCodigo(user.Cod_Usuario || '');
+      setEmail(user.Cor_Usuario || '');
+      setTelefono(user.Nde_Usuario || '');
+      setFecha(user.Fec_Usuario || '');
+      setEstado(user.estado || 'Sí');
+      setRol(user.rol || 'Administrador');
     }
+  }, [user]);
 
-    if (!Apellido) {
-      newErrors.Apellido = 'El apellido es obligatorio.';
-    } else if (!nombreRegex.test(Apellido)) {
-      newErrors.Apellido = 'El apellido solo puede contener letras.';
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage('');
+        setMessageType('');
+      }, 5000);
+
+      return () => clearTimeout(timer);
     }
+  }, [message]);
 
-    if (!Codigo) {
-      newErrors.Codigo = 'El código es obligatorio.';
-    } else if (!codigoRegex.test(Codigo)) {
-      newErrors.Codigo = 'El código solo puede contener números.';
+  const sendForm = async (e) => {
+    e.preventDefault();
+    const token = ReactSession.get('token');
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const userData = {
+      Nom_Usuario: Nombre,
+      Ape_Usuario: Apellido,
+      Cod_Usuario: Codigo,
+      Cor_Usuario: Email,
+      Nde_Usuario: Telefono,
+      Fec_Usuario: Fecha,
+      estado: Estado,
+      rol: Rol,
+      password: Password,
+    };
+
+    try {
+      let responseApi;
+      if (buttonForm === 'Actualizar') {
+        responseApi = await clienteAxios.put(`api/usuarios/${user.id}`, userData, config);
+        Swal.fire({
+          title: 'Actualización Exitosa',
+          text: 'Usuario actualizado correctamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+        });
+      } else {
+        responseApi = await clienteAxios.post('api/usuarios', userData, config);
+        Swal.fire({
+          title: 'Registro Exitoso',
+          text: 'Usuario registrado correctamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+        });
+      }
+
+      await getAllUsers(); // Asegúrate de que esta función sea una función asíncrona
+
+      resetForm();
+    } catch (error) {
+      console.error('Error en la solicitud:', error); // Añadido para depuración
+      if (error.response) {
+        setMessage(`Error: ${error.response.data.message || 'Error al procesar la solicitud'}`);
+      } else if (error.request) {
+        setMessage('Error: No se recibió respuesta del servidor');
+      } else {
+        setMessage('Error al procesar la solicitud');
+      }
+      setMessageType('error');
     }
-
-    if (!Correo) {
-      newErrors.Correo = 'El correo es obligatorio.';
-    } else if (!correoRegex.test(Correo)) {
-      newErrors.Correo = 'El correo electrónico no es válido.';
-    }
-
-    if (!FechaNacimiento) {
-      newErrors.FechaNacimiento = 'La fecha de nacimiento es obligatoria.';
-    }
-
-    if (!Password) {
-      newErrors.Password = 'La contraseña es obligatoria.';
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      handleSubmit({
-        Nom_Usuario: Nombre,
-        Ape_Usuario: Apellido,
-        Cod_Usuario: Codigo,
-        Cor_Usuario: Correo,
-        Fec_Usuario: FechaNacimiento,
-        estado: Estado,
-        rol: Rol,
-        password: Password,
-      });
-    }
+  const resetForm = () => {
+    setNombre('');
+    setApellido('');
+    setCodigo('');
+    setEmail('');
+    setTelefono('');
+    setFecha('');
+    setEstado('Sí');
+    setRol('Administrador');
+    setPassword('');
   };
 
   return (
-    <div className="form-container">
-      <form onSubmit={onSubmit}>
-        {/* Nombre */}
-        <div className="form-group">
-          <label>Nombre</label>
-          <input
-            type="text"
-            value={Nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            required
-          />
-          {errors.Nombre && <span className="error">{errors.Nombre}</span>}
-        </div>
+    <div className="crud-container">
+      <div className="main-content">
+        <div className="content-wrapper">
+          {message && <Alerta message={message} type={messageType} />}
+          <form onSubmit={sendForm} className="form">
+            <h2 className="page-title">Formulario de Usuario</h2>
+            <div className="form-group">
+              <label>Nombre</label>
+              <input
+                type="text"
+                id="nombre"
+                placeholder="Nombre"
+                value={Nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* Apellido */}
-        <div className="form-group">
-          <label>Apellido</label>
-          <input
-            type="text"
-            value={Apellido}
-            onChange={(e) => setApellido(e.target.value)}
-            required
-          />
-          {errors.Apellido && <span className="error">{errors.Apellido}</span>}
-        </div>
+            <div className="form-group">
+              <label>Apellido</label>
+              <input
+                type="text"
+                id="apellido"
+                placeholder="Apellido"
+                value={Apellido}
+                onChange={(e) => setApellido(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* Código */}
-        <div className="form-group">
-          <label>Código</label>
-          <input
-            type="text"
-            value={Codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-            required
-          />
-          {errors.Codigo && <span className="error">{errors.Codigo}</span>}
-        </div>
+            <div className="form-group">
+              <label>Código</label>
+              <input
+                type="text"
+                id="codigo"
+                placeholder="Código"
+                value={Codigo}
+                onChange={(e) => setCodigo(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* Correo */}
-        <div className="form-group">
-          <label>Correo</label>
-          <input
-            type="email"
-            value={Correo}
-            onChange={(e) => setCorreo(e.target.value)}
-            required
-          />
-          {errors.Correo && <span className="error">{errors.Correo}</span>}
-        </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Email"
+                value={Email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* Fecha de Nacimiento */}
-        <div className="form-group">
-          <label>Fecha de Nacimiento</label>
-          <input
-            type="date"
-            value={FechaNacimiento}
-            onChange={(e) => setFechaNacimiento(e.target.value)}
-            required
-          />
-          {errors.FechaNacimiento && <span className="error">{errors.FechaNacimiento}</span>}
-        </div>
+            <div className="form-group">
+              <label>Teléfono</label>
+              <input
+                type="tel"
+                id="telefono"
+                placeholder="Teléfono"
+                value={Telefono}
+                onChange={(e) => setTelefono(e.target.value)}
+              />
+            </div>
 
-        {/* Estado */}
-        <div className="form-group">
-          <label>Estado</label>
-          <select
-            value={Estado}
-            onChange={(e) => setEstado(e.target.value)}
-          >
-            <option value="Sí">Sí</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+            <div className="form-group">
+              <label>Fecha de Registro</label>
+              <input
+                type="date"
+                id="fecha"
+                value={Fecha}
+                onChange={(e) => setFecha(e.target.value)}
+              />
+            </div>
 
-        {/* Rol */}
-        <div className="form-group">
-          <label>Rol</label>
-          <select
-            value={Rol}
-            onChange={(e) => setRol(e.target.value)}
-            disabled
-          >
-            <option value="Administrador">Administrador</option>
-          </select>
-        </div>
+            <div className="form-group">
+              <label>Estado</label>
+              <select
+                id="estado"
+                value={Estado}
+                onChange={(e) => setEstado(e.target.value)}
+              >
+                <option value="Sí">Sí</option>
+                <option value="No">No</option>
+              </select>
+            </div>
 
-        {/* Contraseña */}
-        <div className="form-group">
-          <label>Contraseña</label>
-          <div className="input-group">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={Password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <i
-              className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}
-              onClick={togglePasswordVisibility}
-            ></i>
-          </div>
-          {errors.Password && <span className="error">{errors.Password}</span>}
-        </div>
+            <div className="form-group">
+              <label>Rol</label>
+              <input
+                type="text"
+                id="rol"
+                placeholder="Rol"
+                value={Rol}
+                readOnly
+              />
+            </div>
 
-        <button type="submit" className="btn-submit">
-          {buttonForm}
-        </button>
-      </form>
+            <div className="form-group">
+              <label>Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                placeholder="Contraseña"
+                value={Password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="submit-button"
+            >
+              {buttonForm}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

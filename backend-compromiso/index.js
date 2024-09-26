@@ -1,13 +1,14 @@
 // @ts-nocheck
-require('dotenv').config(); 
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const helmet = require('helmet'); 
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const https = require('https');
 const sequelize = require('./config/database.js');
 const logger = require('./config/logger.js');
+const path = require('path');
 
 // Validación de variables de entorno
 const requiredEnvVars = [
@@ -94,22 +95,43 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Error interno del servidor', error: err.message });
 });
 
-// Lee los certificados SSL
-const privateKey = fs.readFileSync('localhost-key.pem', 'utf8');
-const certificate = fs.readFileSync('localhost.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate };
+// Verifica si los archivos de certificados existen
+const keyPath = path.resolve(__dirname, 'localhost-key.pem');
+const certPath = path.resolve(__dirname, 'localhost.pem');
 
-// Crea el servidor HTTPS
-const httpsServer = https.createServer(credentials, app);
+let server;
 
-// Conexión a la base de datos y arranque del servidor HTTPS
-sequelize.authenticate()
-  .then(() => {
-    console.log('Conexión exitosa a la base de datos');
-    httpsServer.listen(port, () => {
-      console.log(`Servidor HTTPS corriendo en https://localhost:${port}`);
+if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+  const privateKey = fs.readFileSync(keyPath, 'utf8');
+  const certificate = fs.readFileSync(certPath, 'utf8');
+  const credentials = { key: privateKey, cert: certificate };
+
+  // Crea el servidor HTTPS
+  server = https.createServer(credentials, app);
+  console.log('Usando HTTPS');
+
+  // Conexión a la base de datos y arranque del servidor HTTPS
+  sequelize.authenticate()
+    .then(() => {
+      console.log('Conexión exitosa a la base de datos');
+      server.listen(port, () => {
+        console.log(`Servidor HTTPS corriendo en https://localhost:${port}`);
+      });
+    })
+    .catch(err => {
+      console.error('Error al conectar con la base de datos:', err);
     });
-  })
-  .catch(err => {
-    console.error('Error al conectar con la base de datos:', err);
-  });
+
+} else {
+  // Conexión a la base de datos y arranque del servidor HTTP
+  sequelize.authenticate()
+    .then(() => {
+      console.log('Conexión exitosa a la base de datos');
+      app.listen(port, () => {
+        console.log(`Servidor HTTP corriendo en http://localhost:${port}`);
+      });
+    })
+    .catch(err => {
+      console.error('Error al conectar con la base de datos:', err);
+    });
+}
